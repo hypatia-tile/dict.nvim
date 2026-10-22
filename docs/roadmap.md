@@ -1,8 +1,8 @@
 # Roadmap
 
 Build dict.nvim: look a word up in a local DICT server and read the result in
-Neovim. The implementation and its tests are written by hand; each step ends
-with the plugin in a working state.
+Neovim. Each step ends with the plugin in a working state. How a step is run
+is in the `step-start` and `step-review` skills under `.claude/skills/`.
 
 ## Design decisions
 
@@ -73,9 +73,6 @@ dict -h 127.0.0.1 -d wiktionary hello > tests/fixtures/wiktionary-hello.txt
 ```
 
 ## Steps
-
-Each step is one branch. Its tests are written with it, and `make test`
-passes at the end of it.
 
 - [ ] **Step 1 — `:Dict` prints raw output.** `lua/dict/init.lua` with
   `setup(opts)` and the `databases` and `host` options;
