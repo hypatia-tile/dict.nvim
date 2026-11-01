@@ -14,8 +14,12 @@ solution.
 The same contract is in `step-review`; the two must not disagree.
 
 - **The owner writes and commits all code and tests.** Where to cut a commit
-  and what its message says is part of the work, and reviews are pinned to
-  commit hashes, so the person who wrote the code decides the boundaries.
+  is part of the work, and reviews are pinned to commit hashes, so the person
+  who wrote the code decides the boundaries.
+- **The agent drafts the commit messages.** When the owner asks, it reads
+  what is staged or committed and writes the message: what the commit adds,
+  why it is done that way, what is not covered yet, and `Refs #N` for the
+  step's issue. The owner uses it as is or edits it, and runs the commit.
 - **The agent never edits `lua/`, `plugin/`, `doc/` or `tests/`.**
 - **Help stops at explanation.** Explain how a Neovim API behaves, point to
   `:help`, give minimal examples unrelated to this plugin, lay out design
@@ -23,7 +27,8 @@ The same contract is in `step-review`; the two must not disagree.
   tests unless the owner explicitly asks, and then only the part asked for.
   Working out the code is the part the owner wants to do.
 - **The agent writes documents only** — `docs/roadmap.md`, these skills,
-  issue, comment and PR text — commits them only when the owner asks, and
+  issue, comment and PR text, and the drafts of the owner's commit
+  messages — commits its own documents only when the owner asks, and
   asks before every push. The one exception is the roadmap tick described in
   `step-review`.
 - **One branch per step, off `main`**, which the owner creates and pushes.
@@ -75,7 +80,8 @@ It never contains implementation steps, code for this plugin, or test code.
    the owner's go-ahead.
 2. Create the issue with `gh issue create`.
 3. Give the owner the issue number, and remind them to branch off `main` for
-   the step and to reference the issue in commits with `Refs #N`.
+   the step and to ask for a commit message draft when they commit; the
+   draft references the issue with `Refs #N`.
 
 ## When it is done
 

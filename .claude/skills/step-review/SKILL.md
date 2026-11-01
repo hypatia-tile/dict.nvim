@@ -16,6 +16,9 @@ The same contract is in `step-start`; the two must not disagree.
 - **The owner writes and commits all code and tests.** The agent never edits
   `lua/`, `plugin/`, `doc/` or `tests/`, including to fix something a review
   found.
+- **The agent drafts the commit messages**, including for fixes a review
+  asked for: what the commit adds, why, what is not covered yet, and
+  `Refs #N`. The owner uses the draft as is or edits it, and runs the commit.
 - **Findings are failure scenarios, not patches.** Say which input or
   sequence produces which wrong result. Do not post corrected code; finding
   the fix is the part the owner wants to do. Show code only when explicitly
