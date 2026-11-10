@@ -1,6 +1,6 @@
 ---
 name: step-start
-description: Start the next step of dict.nvim. Finds the first unchecked step in docs/roadmap.md, drafts its done criteria with the owner, files the step as a GitHub issue and presents the spec. Use when the owner asks to begin, resume or move on to the next step ("次の step を始めたい", "step 3 に進みます", "続きをやりましょう").
+description: Start the next step of dict.nvim. Finds the first unchecked step in docs/roadmap.md, drafts its done criteria with the owner, files the step as a GitHub issue, creates the step branch and presents the spec. Use when the owner asks to begin, resume or move on to the next step ("次の step を始めたい", "step 3 に進みます", "続きをやりましょう").
 ---
 
 # Starting a step
@@ -13,30 +13,64 @@ solution.
 
 The same contract is in `step-review`; the two must not disagree.
 
-- **The owner writes and commits all code and tests.** Where to cut a commit
-  is part of the work, and reviews are pinned to commit hashes, so the person
-  who wrote the code decides the boundaries.
-- **The agent drafts the commit messages.** When the owner asks, it reads
-  what is staged or committed and writes the message: what the commit adds,
-  why it is done that way, what is not covered yet, and `Refs #N` for the
-  step's issue. The owner uses it as is or edits it, and runs the commit.
-- **The agent never edits `lua/`, `plugin/`, `doc/` or `tests/`.**
+**Who writes what**
+
+- **The owner writes all code and tests.** The agent never edits `lua/`,
+  `plugin/`, `doc/` or `tests/`. Working out the code is the part the owner
+  wants to do.
 - **Help stops at explanation.** Explain how a Neovim API behaves, point to
   `:help`, give minimal examples unrelated to this plugin, lay out design
   options with a recommendation. Do not write this plugin's functions or
   tests unless the owner explicitly asks, and then only the part asked for.
-  Working out the code is the part the owner wants to do.
-- **The agent writes documents only** — `docs/roadmap.md`, these skills,
-  issue, comment and PR text, and the drafts of the owner's commit
-  messages — commits its own documents only when the owner asks, and
-  asks before every push. The one exception is the roadmap tick described in
-  `step-review`.
-- **One branch per step, off `main`**, which the owner creates and pushes.
+- **The agent writes the documents**: `docs/roadmap.md`, these skills, issue,
+  comment and PR text, and every commit message.
+
+**Review**
+
+- **Reviews look at the uncommitted working tree**, and the findings stay in
+  the conversation. Short review rounds are where the learning happens, and
+  posting each one to a public issue slows them down without improving the
+  record. The issue gets one summary when the step closes (`step-review`).
+- **Findings are failure scenarios, not patches.** Say which input or
+  sequence produces which wrong result; finding the fix is the owner's part.
+
+**git**
+
+The owner handed every `git` write except the merge to the agent, so that the
+work around the code costs them nothing.
+
+- **The agent commits without asking** once a review round leaves nothing the
+  owner still wants to fix and `make test` passes. It chooses where to cut
+  and writes the message — what the commit adds, why it is done that way,
+  what is not covered yet, and `Refs #N` — then reports the hash and subject.
+  Anything the owner chose to leave as it is goes in the message as not done
+  yet.
+- **Documents are committed the same way**, on the current step branch. The
+  exception: a change to these two skills, or to the design decisions in
+  `docs/roadmap.md`, is shown to the owner as a diff and committed after
+  their OK, because those change how the work runs or what is being built.
+  A typo fix is not such a change.
+- **Local commits may be rewritten before a push** — amended, reworded,
+  squashed or split, for example when the owner asks for a different cut.
+  Report the old and new hashes each time.
+- **Pushed commits are never rewritten.** The summary on the issue points at
+  pushed hashes, so later fixes are new commits, and step PRs are merged with
+  a merge commit, the only method that keeps every pushed hash in `main`.
+- **Push to the step branch only, never to `main`, never with force.** Push
+  when the owner says they are stopping ("今日はここまで") or moves on to
+  another topic. At the start of a session, right after `vuln-triage`, push
+  any commits a previous session left unpushed. Nothing stays local for more
+  than one session.
+- **One branch per step, off an up-to-date `main`**, created by the agent.
   `main` holds finished steps only, because a fresh clone of the owner's
   Neovim configuration loads the plugin from GitHub's `main`
-  (hypatia-tile/dotfiles-mac#287).
-- **The repository is public**, so nothing is posted to GitHub before the
-  owner has seen it and said go.
+  (hypatia-tile/dotfiles-mac#287). Only the owner merges into it.
+
+**Public text**
+
+- **The repository is public.** Issues, comments and PRs are posted only
+  after the owner has seen them and said go. Pushing commits under the rules
+  above needs no such go-ahead.
 
 ## Before starting
 
@@ -79,11 +113,11 @@ It never contains implementation steps, code for this plugin, or test code.
 1. Show the issue body in the conversation, criteria included, and wait for
    the owner's go-ahead.
 2. Create the issue with `gh issue create`.
-3. Give the owner the issue number, and remind them to branch off `main` for
-   the step and to ask for a commit message draft when they commit; the
-   draft references the issue with `Refs #N`.
+3. Update `main` (`git switch main && git pull --ff-only`) and create
+   `step/<N>-<short-name>` from it. It reaches GitHub with its first push.
+4. Give the owner the issue number and the branch name.
 
 ## When it is done
 
-When the issue exists and the owner has its number. The step itself is
+When the issue exists and the owner is on the step branch. The step itself is
 closed by `step-review` and the merge of its PR, not here.
