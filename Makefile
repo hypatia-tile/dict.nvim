@@ -11,11 +11,20 @@ XDG_DIRS := $(XDG_CONFIG_HOME) $(XDG_DATA_HOME) $(XDG_STATE_HOME) $(XDG_CACHE_HO
 NVIM_FLAGS := --headless --noplugin
 MINIMAL_INIT := tests/minimal_init.lua
 TEST_COMMAND := PlenaryBustedDirectory tests/ { minimal_init = '$(MINIMAL_INIT)' }
+DICT_SETUP := lua require('dict').setup()
+DICT_COMMAND := Dict hello
 
-.PHONY: test xdg-dirs
+.PHONY: test dict xdg-dirs
 
 test: xdg-dirs
 	@nvim $(NVIM_FLAGS) -u $(MINIMAL_INIT) -c "$(TEST_COMMAND)"
+
+dict: xdg-dirs
+	@nvim $(NVIM_FLAGS) -u $(MINIMAL_INIT) \
+		-c "$(DICT_SETUP)" \
+		-c "$(DICT_COMMAND)" \
+		-c "lua vim.wait(2000)" \
+		-c q
 
 xdg-dirs:
 	@mkdir -p $(XDG_DIRS)

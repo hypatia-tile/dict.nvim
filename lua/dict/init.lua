@@ -15,9 +15,8 @@ function dict.setup(opts)
   vim.api.nvim_create_user_command("Dict", function(args)
     local word = args.fargs[1]
     if word then
-      dict.backend(word, dict.databases, function(sysopts)
-        print(sysopts.stdout)
-        print(sysopts.stderr)
+      dict.backend(word, dict.databases, function(r)
+        print(vim.inspect(r))
       end)
     end
   end, { nargs = 1, desc = "Call the dictionary backend to look up a word passed via command line args." })
